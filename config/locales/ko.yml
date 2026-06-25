@@ -1,0 +1,12 @@
+ko:
+  text_mindmap_edit_comment: "마인드맵으로 편집함"
+  notice_mindmap_saved: "마인드맵을 저장했습니다"
+  label_mindmap_editor: "마인드맵 편집기"
+  label_mindmap_dark_mode: "야간 모드"
+  label_mindmap_light_mode: "주간 모드"
+  label_mindmap_fullscreen: "전체화면"
+  label_mindmap_close: "닫기"
+  label_mindmap_view: "마인드맵"
+  error_mindmap_conflict: "편집기를 연 이후 내용이 변경되었습니다. 새로고침 후 다시 시도해 주세요."
+  error_mindmap_invalid: "토픽에 예약 문자열 '}}'이(가) 포함되어 마인드맵을 저장할 수 없습니다."
+  error_mindmap_save_failed: "마인드맵 저장에 실패했습니다."

@@ -1,0 +1,12 @@
+en:
+  text_mindmap_edit_comment: "Edited via mindmap"
+  notice_mindmap_saved: "Mindmap saved"
+  label_mindmap_editor: "Mindmap editor"
+  label_mindmap_dark_mode: "Dark mode"
+  label_mindmap_light_mode: "Light mode"
+  label_mindmap_fullscreen: "Fullscreen"
+  label_mindmap_close: "Close"
+  label_mindmap_view: "Mind Map"
+  error_mindmap_conflict: "This content changed since you opened the editor. Please reload and try again."
+  error_mindmap_invalid: "The mindmap could not be saved because a topic contains the reserved sequence '}}'."
+  error_mindmap_save_failed: "Failed to save the mindmap."
