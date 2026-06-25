@@ -1,0 +1,245 @@
+.mindmap-wrapper {
+  position: relative;
+  margin: 1em 0;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #fafafa;
+  overflow: hidden;
+}
+
+.mindmap-diagram {
+  width: 100%;
+  min-height: 240px;
+}
+
+.mindmap-diagram .map-container {
+  height: 100%;
+  background: transparent;
+}
+
+.mindmap-fallback {
+  margin: 0;
+  padding: 12px 14px;
+  white-space: pre-wrap;
+  font-family: monospace;
+  color: #333;
+}
+
+.mindmap-corner {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 5;
+  display: flex;
+  gap: 6px;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.mindmap-wrapper:hover .mindmap-corner,
+.mindmap-corner:focus-within {
+  opacity: 1;
+}
+
+.mindmap-corner-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  color: #555;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.mindmap-corner-btn:hover {
+  color: #1f6feb;
+  border-color: #1f6feb;
+}
+
+.mindmap-overlay-dialog.mindmap-fs {
+  width: 100vw;
+  height: 100vh;
+  border-radius: 0;
+}
+
+.mindmap-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+body.mindmap-overlay-open {
+  overflow: hidden;
+}
+
+.mindmap-overlay-dialog {
+  display: flex;
+  flex-direction: column;
+  width: 92vw;
+  height: 88vh;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+}
+
+.mindmap-overlay-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  border-bottom: 1px solid #e5e5e5;
+  background: #f7f7f7;
+}
+
+.mindmap-overlay-title {
+  font-weight: 600;
+  font-size: 15px;
+  color: #222;
+}
+
+.mindmap-overlay-actions {
+  display: inline-flex;
+  gap: 8px;
+}
+
+.mindmap-editor-canvas {
+  flex: 1 1 auto;
+  min-height: 0;
+  background: #fff;
+}
+
+.mindmap-editor-canvas .map-container {
+  height: 100%;
+}
+
+/* Redmine's global ".icon { padding-left: 20px }" collapses mind-elixir's
+   border-box SVG icons to 0 width. Re-scope icon sizing inside the diagram. */
+.map-container .icon,
+.mind-elixir-toolbar .icon {
+  width: 1em;
+  height: 1em;
+  padding: 0;
+  background: none;
+}
+
+.mindmap-btn {
+  padding: 6px 16px;
+  font-size: 13px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background: #fff;
+  color: #333;
+  cursor: pointer;
+}
+
+.mindmap-btn:hover {
+  background: #f0f0f0;
+}
+
+.mindmap-btn-save {
+  background: #1f6feb;
+  border-color: #1f6feb;
+  color: #fff;
+}
+
+.mindmap-btn-save:hover {
+  background: #1a5fd0;
+}
+
+.mindmap-btn-save:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.mindmap-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translate(-50%, 16px);
+  z-index: 10001;
+  max-width: 80vw;
+  padding: 10px 18px;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 13px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  opacity: 0;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  pointer-events: none;
+}
+
+.mindmap-toast-visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.mindmap-toast-ok {
+  background: #2da44e;
+}
+
+.mindmap-toast-error {
+  background: #cf222e;
+}
+
+.mindmap-btn-theme {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  padding: 6px;
+}
+
+.mindmap-wrapper.mindmap-dark {
+  background: #1f1f1f;
+  border-color: #3a4252;
+}
+
+.mindmap-overlay.mindmap-dark .mindmap-overlay-dialog {
+  background: #1f1f1f;
+}
+
+.mindmap-overlay.mindmap-dark .mindmap-overlay-header {
+  background: #2d3748;
+  border-bottom-color: #3a4252;
+}
+
+.mindmap-overlay.mindmap-dark .mindmap-overlay-title {
+  color: #f0f0f0;
+}
+
+.mindmap-overlay.mindmap-dark .mindmap-btn {
+  background: #3b3b3b;
+  color: #eaeaea;
+  border-color: #555;
+}
+
+.mindmap-overlay.mindmap-dark .mindmap-btn:hover {
+  background: #4a4a4a;
+}
+
+.mindmap-overlay.mindmap-dark .mindmap-btn-save {
+  background: #1f6feb;
+  border-color: #1f6feb;
+  color: #fff;
+}
+
+.mindmap-diagram .map-container,
+.mindmap-editor-canvas .map-container {
+  cursor: grab;
+}
+
+.map-container.space-pressed,
+.map-container:active {
+  cursor: grabbing;
+}
