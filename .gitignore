@@ -1,0 +1,10 @@
+*.gem
+*.rbc
+.bundle/
+vendor/bundle/
+node_modules/
+.playwright-mcp/
+*.png
+tmp/
+log/
+.DS_Store
