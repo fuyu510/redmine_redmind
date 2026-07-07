@@ -4,12 +4,12 @@ Gem::Specification.new do |spec|
   spec.authors     = ['Redmine Redmind contributors']
   spec.summary     = 'Redmine Redmind'
   spec.description  = 'Author mindmaps as indented lists and view/edit them as interactive diagrams in Redmine wiki pages and issues.'
-  spec.homepage    = 'https://github.com/redmine-redmind/redmine_redmind'
+  spec.homepage    = 'https://github.com/fuyu510/redmine_redmind'
   spec.license     = 'MIT'
   spec.required_ruby_version = '>= 2.7.0'
 
   spec.metadata['redmine_plugin_id'] = 'redmine_redmind'
-  spec.metadata['author_url']        = 'https://github.com/redmine-redmind'
+  spec.metadata['author_url']        = 'https://github.com/fuyu510'
 
   spec.files = Dir[
     'init.rb',

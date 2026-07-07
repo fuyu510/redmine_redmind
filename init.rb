@@ -5,8 +5,8 @@ Redmine::Plugin.register :redmine_redmind do
   author 'Redmine Redmind contributors'
   description 'Author mindmaps as indented lists; render and visually edit them as interactive diagrams in wiki pages and issues.'
   version mindmap_version
-  url 'https://github.com/redmine-redmind/redmine_redmind'
-  author_url 'https://github.com/redmine-redmind'
+  url 'https://github.com/fuyu510/redmine_redmind'
+  author_url 'https://github.com/fuyu510'
   requires_redmine version_or_higher: '5.1.0'
 end
 
