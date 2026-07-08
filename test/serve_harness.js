@@ -43,7 +43,8 @@ function harness() {
     '<meta name="csrf-token" content="test-csrf-token"><title>Mindmap harness</title>' +
     '<link rel="stylesheet" href="/assets/stylesheets/mind-elixir.css">' +
     '<link rel="stylesheet" href="/assets/stylesheets/redmine_redmind.css">' +
-    '<script>window.RedmineRedmindConfig={saveUrl:"/mindmaps/save",issueUrl:"/issues/",i18n:' +
+    '<script>window.RedmineRedmindConfig={saveUrl:"/mindmaps/save",issueUrl:"/issues/",' +
+    'issuesUrl:"/mindmaps/issues",i18n:' +
     '{edit:"편집",save:"저장",cancel:"취소",editTitle:"마인드맵 편집기",' +
     'fullscreen:"전체화면",close:"닫기",view:"마인드맵",' +
     'saved:"저장되었습니다",conflict:"내용이 변경되었습니다",failed:"저장 실패"}};</script>' +
@@ -83,6 +84,18 @@ const server = http.createServer(function (req, res) {
   if (req.method === 'GET' && req.url === '/__last') {
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify(lastPayload));
+    return;
+  }
+  if (req.method === 'GET' && req.url.indexOf('/mindmaps/issues') === 0) {
+    // Mock of MindmapsController#issues: return a subject for known ids only.
+    const knownSubjects = { '42': '로그인 화면 개선', '1234': '백엔드 API 설계', '43': '검색 성능 튜닝' };
+    const q = req.url.split('?')[1] || '';
+    const idsParam = (q.split('&').find(function (p) { return p.indexOf('ids=') === 0; }) || '').slice(4);
+    const ids = decodeURIComponent(idsParam).split(',').filter(Boolean);
+    const out = {};
+    ids.forEach(function (id) { if (knownSubjects[id]) { out[id] = knownSubjects[id]; } });
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify(out));
     return;
   }
   if (req.method === 'GET' && (req.url === '/' || req.url === '/index.html')) {

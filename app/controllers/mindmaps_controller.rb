@@ -1,7 +1,22 @@
 require 'base64'
 
 class MindmapsController < ApplicationController
-  before_action :require_login
+  before_action :require_login, except: [:issues]
+
+  # Resolve issue subjects for the "#1234" links rendered inside mindmap nodes,
+  # so hovering a reference shows its title. Scoped through Issue.visible, so it
+  # only ever returns what the current user (including anonymous on public
+  # projects) may already see — no REST API toggle required.
+  def issues
+    ids = params[:ids].to_s.split(',').map(&:to_i).reject(&:zero?).uniq.first(200)
+    subjects = {}
+    if ids.any?
+      Issue.visible.where(id: ids).pluck(:id, :subject).each do |id, subject|
+        subjects[id.to_s] = subject
+      end
+    end
+    render json: subjects
+  end
 
   def update
     object = RedmineRedmind::Registry.load_object(params[:object_type], params[:object_id])

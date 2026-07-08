@@ -183,6 +183,17 @@
   // segment-by-segment so the substitution can never inject markup.
   var ISSUE_REF = /#(\d+)/g;
 
+  // Cache of issue id -> subject (string), or false when known missing / not
+  // visible. Shared across every map on the page so a subject is fetched once.
+  var issueTitleCache = {};
+
+  // Tooltip text for a reference: "#7980: subject" once the subject is known,
+  // otherwise just "#7980".
+  function issueTitleText(id) {
+    var subject = issueTitleCache[id];
+    return (typeof subject === 'string' && subject) ? '#' + id + ': ' + subject : '#' + id;
+  }
+
   // Passed to Mind Elixir as its `markdown` option: it renders each node's
   // topic as HTML, turning "#1234" into a link that opens the issue in a new
   // tab. The raw topic text is untouched, so the outline round-trips losslessly.
@@ -196,14 +207,55 @@
     while ((match = ISSUE_REF.exec(text)) !== null) {
       html += escapeHtml(text.slice(last, match.index));
       var label = match[0];
-      var href = base + match[1];
-      html += '<a class="' + ISSUE_LINK_CLASS + '" href="' + escapeHtml(href) +
-        '" target="_blank" rel="noopener noreferrer" title="' + escapeHtml(label) + '">' +
+      var id = match[1];
+      html += '<a class="' + ISSUE_LINK_CLASS + '" data-issue-id="' + escapeHtml(id) +
+        '" href="' + escapeHtml(base + id) +
+        '" target="_blank" rel="noopener noreferrer" title="' + escapeHtml(issueTitleText(id)) + '">' +
         escapeHtml(label) + '</a>';
       last = match.index + label.length;
     }
     html += escapeHtml(text.slice(last));
     return html;
+  }
+
+  // Fetch subjects for the issue references in this container and fold them into
+  // each link's tooltip. Subjects come from the plugin's own endpoint, which
+  // honours Redmine issue visibility, so no REST API toggle is needed. Already
+  // cached (or forbidden) ids are never refetched.
+  function annotateIssueTitles(container) {
+    if (!container) { return; }
+    var links = container.querySelectorAll('a.' + ISSUE_LINK_CLASS);
+    if (!links.length) { return; }
+
+    function applyTitles() {
+      for (var j = 0; j < links.length; j++) {
+        var lid = links[j].getAttribute('data-issue-id');
+        if (lid) { links[j].title = issueTitleText(lid); }
+      }
+    }
+
+    var missing = {};
+    for (var i = 0; i < links.length; i++) {
+      var id = links[i].getAttribute('data-issue-id');
+      if (id && !Object.prototype.hasOwnProperty.call(issueTitleCache, id)) { missing[id] = true; }
+    }
+    var ids = Object.keys(missing);
+    var url = config().issuesUrl;
+    if (!url || !ids.length) { applyTitles(); return; }
+
+    var sep = url.indexOf('?') >= 0 ? '&' : '?';
+    fetch(url + sep + 'ids=' + encodeURIComponent(ids.join(',')), {
+      credentials: 'same-origin',
+      headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
+    }).then(function (res) {
+      return res.ok ? res.json() : {};
+    }).then(function (map) {
+      map = map || {};
+      for (var k = 0; k < ids.length; k++) {
+        issueTitleCache[ids[k]] = Object.prototype.hasOwnProperty.call(map, ids[k]) ? map[ids[k]] : false;
+      }
+      applyTitles();
+    }).catch(function () { ignore(); });
   }
 
   // A node click normally selects the node; only a click on an issue link
@@ -263,6 +315,7 @@
     mind.init({ nodeData: parsed.nodeData });
     if (typeof mind.disableEdit === 'function') { mind.disableEdit(); }
     enableIssueLinks(container);
+    annotateIssueTitles(container);
     fitView(mind, container);
     return mind;
   }
@@ -488,6 +541,7 @@
     instance = mind;
     mind.init({ nodeData: parsed.nodeData });
     enableIssueLinks(canvas);
+    annotateIssueTitles(canvas);
     fitView(mind, canvas);
     enableDragPan(mind, canvas);
 

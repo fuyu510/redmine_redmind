@@ -23,6 +23,7 @@ module RedmineRedmind
       {
         saveUrl: "#{Redmine::Utils.relative_url_root}/mindmaps/save",
         issueUrl: "#{Redmine::Utils.relative_url_root}/issues/",
+        issuesUrl: "#{Redmine::Utils.relative_url_root}/mindmaps/issues",
         i18n: {
           edit: I18n.t(:button_edit, default: 'Edit'),
           save: I18n.t(:button_save, default: 'Save'),
