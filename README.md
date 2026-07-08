@@ -13,6 +13,8 @@ bundled — **no CDN, no build step, works offline**.
 | --- | --- |
 | You see the literal list inside `{{mindmap …}}` | You see an interactive diagram |
 
+
+![](redmind_preview.png)
 ## Features
 
 - **List in the editor, diagram in the view.** The mindmap body is a normal
