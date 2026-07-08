@@ -5,6 +5,7 @@ vendor/bundle/
 node_modules/
 .playwright-mcp/
 *.png
+!redmind_preview.png
 tmp/
 log/
 .DS_Store
