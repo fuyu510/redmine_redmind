@@ -234,6 +234,29 @@ body.mindmap-overlay-open {
   color: #fff;
 }
 
+/* Issue references (#1234) rendered inside node topics. The hover highlight
+   uses background + box-shadow only, so it never changes the text box size
+   (which would reflow the whole map). */
+.redmind-issue-link {
+  color: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 2px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease;
+}
+
+.redmind-issue-link:hover,
+.redmind-issue-link:focus {
+  background: #1f6feb;
+  color: #fff;
+  text-decoration: none;
+  box-shadow: 0 0 0 2px #1f6feb;
+  outline: none;
+}
+
 .mindmap-diagram .map-container,
 .mindmap-editor-canvas .map-container {
   cursor: grab;

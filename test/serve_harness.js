@@ -19,8 +19,8 @@ const sampleOutline = [
   '    - UI 설계',
   '    - 프로토타입',
   '  - 3단계 개발',
-  '    - 백엔드 API',
-  '    - 프론트엔드',
+  '    - 백엔드 API #1234 참고',
+  '    - 프론트엔드 (#42, #43)',
   '    - 데이터베이스',
   '  - 4단계 테스트',
   '    - 단위 테스트',
@@ -43,7 +43,7 @@ function harness() {
     '<meta name="csrf-token" content="test-csrf-token"><title>Mindmap harness</title>' +
     '<link rel="stylesheet" href="/assets/stylesheets/mind-elixir.css">' +
     '<link rel="stylesheet" href="/assets/stylesheets/redmine_redmind.css">' +
-    '<script>window.RedmineRedmindConfig={saveUrl:"/mindmaps/save",i18n:' +
+    '<script>window.RedmineRedmindConfig={saveUrl:"/mindmaps/save",issueUrl:"/issues/",i18n:' +
     '{edit:"편집",save:"저장",cancel:"취소",editTitle:"마인드맵 편집기",' +
     'fullscreen:"전체화면",close:"닫기",view:"마인드맵",' +
     'saved:"저장되었습니다",conflict:"내용이 변경되었습니다",failed:"저장 실패"}};</script>' +

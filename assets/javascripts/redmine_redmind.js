@@ -165,6 +165,62 @@
     return meta ? meta.getAttribute('content') : '';
   }
 
+  function issueUrlBase() {
+    var base = config().issueUrl || '/issues/';
+    return base.charAt(base.length - 1) === '/' ? base : base + '/';
+  }
+
+  function escapeHtml(str) {
+    return String(str == null ? '' : str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  var ISSUE_LINK_CLASS = 'redmind-issue-link';
+  // Redmine issue references such as "#1234". The whole topic is escaped
+  // segment-by-segment so the substitution can never inject markup.
+  var ISSUE_REF = /#(\d+)/g;
+
+  // Passed to Mind Elixir as its `markdown` option: it renders each node's
+  // topic as HTML, turning "#1234" into a link that opens the issue in a new
+  // tab. The raw topic text is untouched, so the outline round-trips losslessly.
+  function renderTopicHtml(topic) {
+    var text = String(topic == null ? '' : topic);
+    var base = issueUrlBase();
+    var html = '';
+    var last = 0;
+    var match;
+    ISSUE_REF.lastIndex = 0;
+    while ((match = ISSUE_REF.exec(text)) !== null) {
+      html += escapeHtml(text.slice(last, match.index));
+      var label = match[0];
+      var href = base + match[1];
+      html += '<a class="' + ISSUE_LINK_CLASS + '" href="' + escapeHtml(href) +
+        '" target="_blank" rel="noopener noreferrer" title="' + escapeHtml(label) + '">' +
+        escapeHtml(label) + '</a>';
+      last = match.index + label.length;
+    }
+    html += escapeHtml(text.slice(last));
+    return html;
+  }
+
+  // A node click normally selects the node; only a click on an issue link
+  // should navigate. Intercept in the capture phase so Mind Elixir's own
+  // (bubble-phase) click handler never runs for the link, then open the issue.
+  function enableIssueLinks(container) {
+    if (!container || container._redmindIssueLinks) { return; }
+    container._redmindIssueLinks = true;
+    container.addEventListener('click', function (e) {
+      var link = e.target && e.target.closest ? e.target.closest('a.' + ISSUE_LINK_CLASS) : null;
+      if (!link) { return; }
+      e.stopPropagation();
+      e.preventDefault();
+      window.open(link.href, '_blank', 'noopener');
+    }, true);
+  }
+
   function showFallback(container, outline) {
     var pre = document.createElement('pre');
     pre.className = 'mindmap-fallback';
@@ -197,6 +253,7 @@
       draggable: false,
       mouseSelectionButton: 2,
       theme: themeObject(savedThemeName()),
+      markdown: renderTopicHtml,
       scaleSensitivity: 0.2,
       scaleMin: 0.05,
       scaleMax: 3,
@@ -205,6 +262,7 @@
     instance = mind;
     mind.init({ nodeData: parsed.nodeData });
     if (typeof mind.disableEdit === 'function') { mind.disableEdit(); }
+    enableIssueLinks(container);
     fitView(mind, container);
     return mind;
   }
@@ -421,6 +479,7 @@
       allowUndo: true,
       mouseSelectionButton: 2,
       theme: themeObject(currentTheme),
+      markdown: renderTopicHtml,
       scaleSensitivity: 0.2,
       scaleMin: 0.05,
       scaleMax: 3,
@@ -428,6 +487,7 @@
     });
     instance = mind;
     mind.init({ nodeData: parsed.nodeData });
+    enableIssueLinks(canvas);
     fitView(mind, canvas);
     enableDragPan(mind, canvas);
 
