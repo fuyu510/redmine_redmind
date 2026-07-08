@@ -29,7 +29,8 @@ bundled — **no CDN, no build step, works offline**.
   (new version) or issue (new journal).
 - **Permission‑aware.** Edit affordances only appear when the current user may
   edit that object, and every save is re‑authorized server‑side.
-- **Runs on Redmine 5.1 and 6.x; packaged for 7.0 gem installation.**
+- **Runs on Redmine 5.1, 6.x and 7.0** as a filesystem plugin; the gemspec is
+  ready for the native gem‑plugin loader targeted at Redmine 7.1.
 
 ## Viewing & navigation
 
@@ -144,17 +145,46 @@ bundle exec rake redmine:plugins:migrate RAILS_ENV=production
 # restart Redmine (Propshaft auto‑precompiles plugin assets on startup)
 ```
 
-### Redmine 7.0 (gem plugin)
+### Redmine 7.0
 
-When 7.0's gem plugin loader ships, add to `<REDMINE>/Gemfile.extension`:
+Redmine 7.0 (Ruby 3.4+, Propshaft) still loads plugins from the `plugins/`
+directory, so install it as a **filesystem plugin** — either by cloning, or by
+unpacking the built gem.
+
+**A. From git (same as 6.x):**
+
+```bash
+cd <REDMINE>/plugins
+git clone https://github.com/fuyu510/redmine_redmind.git
+cd <REDMINE>
+bundle install
+bundle exec rake redmine:plugins:migrate RAILS_ENV=production
+# restart Redmine (Propshaft auto‑precompiles plugin assets on startup)
+```
+
+**B. From the built gem** — build it with `gem build redmine_redmind.gemspec`
+(produces `redmine_redmind-1.0.0.gem`), then unpack it into `plugins/`:
+
+```bash
+cd <REDMINE>/plugins
+gem unpack /path/to/redmine_redmind-1.0.0.gem
+mv redmine_redmind-1.0.0 redmine_redmind   # the dir name must equal the plugin id
+cd <REDMINE>
+bundle install
+# restart Redmine
+```
+
+The gemspec sets `metadata["redmine_plugin_id"] = "redmine_redmind"`, so once
+the native gem‑plugin loader lands (Redmine feature
+[#27705](https://www.redmine.org/issues/27705), targeted at **7.1.0**) you will
+additionally be able to list the gem in `<REDMINE>/Gemfile.extension`:
 
 ```ruby
 gem 'redmine_redmind'
 ```
 
-then `bundle install` and restart. The gemspec exposes
-`metadata["redmine_plugin_id"] = "redmine_redmind"` so Redmine loads it as a
-plugin. The same checkout still works as a classic filesystem plugin on 5.1/6.x.
+and just run `bundle install`. That `Gemfile.extension` loader is **not present
+in 7.0** yet, so use the filesystem method above on 7.0.
 
 There are **no database migrations** — the `migrate` step above is a harmless
 no‑op kept for habit.
